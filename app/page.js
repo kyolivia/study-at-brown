@@ -18,4 +18,15 @@ function computeAverages(noiseReports) {
 }
 
 export default async function Home() {
+  
+  const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+
+  const [{ data: libraries }, { data: noiseReports }] = await Promise.all([
+  supabase.from('library').select('*').order('name'),
+  supabase.from('noise_table').select('*').gte('date', thirtyMinsAgo),
+  ])
+
+  const noiseByLocationFloor = computeAverages(noiseReports ?? [])
+
+
 }
